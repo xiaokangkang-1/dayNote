@@ -79,4 +79,12 @@ public class NoteDbOpenHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public int updateData(Note note) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("title", note.getTitle());
+        values.put("content", note.getContent());
+        values.put("created_time", note.getCreatedTime());
+        return db.update(TABLE_NAME_NOTE, values, "id = ?", new String[]{note.getId()});
+    }
 }

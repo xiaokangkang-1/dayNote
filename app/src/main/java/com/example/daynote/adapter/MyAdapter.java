@@ -1,5 +1,6 @@
 package com.example.daynote.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daynote.AddActivity;
 import com.example.daynote.EidtActivity;
+import com.example.daynote.NoteDbOpenHelper;
 import com.example.daynote.R;
 import com.example.daynote.bean.Note;
 
@@ -23,10 +25,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private LayoutInflater mLayoutInflater;
     private Context mContext;
 
+    private NoteDbOpenHelper mDbOpenHelper;
+
     public MyAdapter(Context context, List<Note> beanList){
         this.mBeanList = beanList;
         this.mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
+        mDbOpenHelper = new NoteDbOpenHelper(context);
     }
 
     @NonNull
@@ -55,11 +60,32 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public boolean onLongClick(View v) {
                 //TODO 长按删除或编辑
+                Dialog dialog = new Dialog(mContext, com.google.android.material.R.style.ThemeOverlay_Material3_Light_Dialog_Alert_Framework);
+                View view = mLayoutInflater.inflate(R.layout.list_item_dialog_layout, null);
+                View tvDelete = view.findViewById(R.id.tv_delete);
+                tvDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO 删除
+                        int row = mDbOpenHelper.deleteData(note.getId());
+                        if(row > 0){
+                            deleteData(position);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setContentView(view);
+                dialog.show();
                 return false;
             }
         });
     }
 
+
+    public void deleteData(int pos){
+        mBeanList.remove(pos);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return mBeanList.size();

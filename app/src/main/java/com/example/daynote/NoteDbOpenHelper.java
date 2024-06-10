@@ -87,4 +87,9 @@ public class NoteDbOpenHelper extends SQLiteOpenHelper {
         values.put("created_time", note.getCreatedTime());
         return db.update(TABLE_NAME_NOTE, values, "id = ?", new String[]{note.getId()});
     }
+
+    public int deleteData(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(TABLE_NAME_NOTE, "id = ?", new String[]{id});
+    }
 }

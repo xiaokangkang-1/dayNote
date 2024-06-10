@@ -1,5 +1,6 @@
 package com.example.daynote;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.controls.actions.FloatAction;
 import android.view.View;
@@ -40,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
         initEvent();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mNotes = getDataFromDB();
+        mMyAdapter.refreshData(mNotes);
+    }
+
     private void initEvent() {
         mMyAdapter = new MyAdapter(this, mNotes);
         recyclerView.setAdapter(mMyAdapter);
@@ -49,16 +57,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         mNotes = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        mNoteDbOpenHelper = new NoteDbOpenHelper(this);
+        /*for (int i = 0; i < 10; i++) {
             Note note = new Note();
             note.setTitle("title" + i);
             note.setContent("content" + i);
             note.setCreatedTime(getTime());
             mNotes.add(note);
-        }
+        }*/
+        mNotes = getDataFromDB();
 
 
     }
+
+    private List<Note> getDataFromDB() {
+        return mNoteDbOpenHelper.queryAllFromDB();
+
+
+    }
+
     private String getTime() {
         //获取当前时间
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
@@ -71,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add(View view) {
-
+        Intent intent = new Intent(this, AddActivity.class);
+        startActivity(intent);
     }
 }

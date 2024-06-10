@@ -65,6 +65,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return mBeanList.size();
     }
 
+    public void refreshData(List<Note> beanList){
+        //更新数据
+        this.mBeanList = beanList;
+        // 通知适配器数据源已更改，以便更新视图
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView mTvTitle;
